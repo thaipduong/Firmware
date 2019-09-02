@@ -40,14 +40,6 @@
 
 #include "LandDetector.h"
 
-#include <float.h>
-#include <math.h>
-
-#include <px4_config.h>
-#include <px4_defines.h>
-#include <drivers/drv_hrt.h>
-#include <uORB/topics/parameter_update.h>
-
 using namespace time_literals;
 
 namespace land_detector
@@ -71,7 +63,8 @@ LandDetector::~LandDetector()
 
 void LandDetector::start()
 {
-	_check_params(true);
+	_force_param_update = true;
+	_update_params();
 	ScheduleOnInterval(LAND_DETECTOR_UPDATE_INTERVAL);
 }
 
@@ -79,7 +72,7 @@ void LandDetector::Run()
 {
 	perf_begin(_cycle_perf);
 
-	_check_params(false);
+	_update_params();
 	_actuator_armed_sub.update(&_actuator_armed);
 	_update_topics();
 	_update_state();
@@ -149,16 +142,15 @@ void LandDetector::Run()
 	}
 }
 
-void LandDetector::_check_params(const bool force)
+void LandDetector::_update_params()
 {
 	// check for parameter updates
-	if (_parameter_update_sub.updated() || force) {
+	if (_parameter_update_sub.updated() || _force_param_update) {
 		// clear update
-		parameter_update_s pupdate;
-		_parameter_update_sub.copy(&pupdate);
+		parameter_update_s param_update;
+		_parameter_update_sub.copy(&param_update);
 
-		// update parameters from storage
-		_update_params();
+		_force_param_update = false;
 
 		_update_total_flight_time();
 	}
@@ -190,6 +182,13 @@ void LandDetector::_update_state()
 	} else {
 		_state = LandDetectionState::FLYING;
 	}
+}
+
+void LandDetector::_update_topics()
+{
+	_actuator_armed_sub.update(&_actuator_armed);
+	_vehicle_acceleration_sub.update(&_vehicle_acceleration);
+	_vehicle_local_position_sub.update(&_vehicle_local_position);
 }
 
 void LandDetector::_update_total_flight_time()
