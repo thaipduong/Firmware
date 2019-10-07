@@ -8,6 +8,6 @@ float32 scale
 
 uint8 samples		# number of valid samples
 
-int16[8] x		# angular velocity in the NED X board axis in rad/s
-int16[8] y		# angular velocity in the NED Y board axis in rad/s
-int16[8] z		# angular velocity in the NED Z board axis in rad/s
+int16[8] x		# acceleration in the NED X board axis in m/s/s
+int16[8] y		# acceleration in the NED Y board axis in m/s/s
+int16[8] z		# acceleration in the NED Z board axis in m/s/s
