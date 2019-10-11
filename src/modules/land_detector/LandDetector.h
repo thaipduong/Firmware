@@ -109,9 +109,10 @@ public:
 protected:
 
 	/**
-	 * Updates parameters if changes have occurred.
+	 * Updates parameters if changes have occurred or if forced.
+	 * @var force Forces a parameter update.
 	 */
-	virtual void _update_params();
+	virtual void _update_params(const bool force = false);
 
 	/**
 	 * Updates subscribed uORB topics.
@@ -178,7 +179,6 @@ private:
 
 	void _update_total_flight_time();
 
-	bool _force_param_update{false};	///< allows a forced a parameter update
 	bool _previous_armed_state{false};	///< stores the previous actuator_armed.armed state
 
 	hrt_abstime _takeoff_time{0};

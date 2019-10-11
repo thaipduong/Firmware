@@ -63,8 +63,7 @@ LandDetector::~LandDetector()
 
 void LandDetector::start()
 {
-	_force_param_update = true;
-	_update_params();
+	_update_params(true);
 	ScheduleOnInterval(LAND_DETECTOR_UPDATE_INTERVAL);
 }
 
@@ -142,15 +141,13 @@ void LandDetector::Run()
 	}
 }
 
-void LandDetector::_update_params()
+void LandDetector::_update_params(const bool force)
 {
 	// check for parameter updates
-	if (_parameter_update_sub.updated() || _force_param_update) {
+	if (_parameter_update_sub.updated() || force) {
 		// clear update
 		parameter_update_s param_update;
 		_parameter_update_sub.copy(&param_update);
-
-		_force_param_update = false;
 
 		_update_total_flight_time();
 	}
