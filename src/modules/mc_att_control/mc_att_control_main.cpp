@@ -413,7 +413,8 @@ MulticopterAttitudeControl::publish_actuator_controls()
 	_actuators.control[7] = (float)_landing_gear.landing_gear;
 	// note: _actuators.timestamp_sample is set in MulticopterAttitudeControl::Run()
 	_actuators.timestamp = hrt_absolute_time();
-
+    // THAI DUONG: Print out the actuator commands here: thrust + 3 torques
+    // PX4_INFO("CALLING publish_actuator_controls: %f %f %f %f", (double)_actuators.control[0], (double)_actuators.control[1], (double)_actuators.control[2], (double)_actuators.control[3]);
 	/* scale effort by battery status */
 	if (_param_mc_bat_scale_en.get() && _battery_status.scale > 0.0f) {
 		for (int i = 0; i < 4; i++) {
